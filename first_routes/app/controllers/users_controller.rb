@@ -45,8 +45,10 @@ class UsersController < ApplicationController
 
   def favorite_artwork
     favs = Artwork.joins("JOIN artwork_shares on artworks.id = artwork_shares.artwork_id")
-    .where('artist_id = ? OR viewer_id = ? AND artist_favorite = true OR viewer_favorite = true', params[:id], params[:id] ).distinct
+    .where('artist_id = :id OR viewer_id = :id AND artist_favorite = true OR viewer_favorite = true', {id: params[:id]} ).distinct
     render json: favs
+
+    self.artworks.where(artist_favorite: true) + self.artwork_shares.where(viewer_favorite: true)
   end
 
 
